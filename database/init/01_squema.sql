@@ -1,9 +1,7 @@
 -- Seleccionamos la base de las incidencias del calendario
 USE bd_calendario;
 
--- ---------------------------------------------------------
--- Creación de tablas
--- ---------------------------------------------------------
+---------------------------------------------------------Creacion de tablas---------------------------------------------------------
 
 -- Tabla de productos
 CREATE TABLE IF NOT EXISTS PRODUCTO (
@@ -11,7 +9,6 @@ CREATE TABLE IF NOT EXISTS PRODUCTO (
         id                              BIGINT          NOT NULL AUTO_INCREMENT,
 
         -- Atributos
-        sku                             BIGINT          NOT NULL,
         nombre_producto                 VARCHAR(80)     NOT NULL,
 
         -- Auditoria
@@ -62,15 +59,15 @@ CREATE TABLE IF NOT EXISTS RUN (
         -- Constraints
         PRIMARY KEY (id)
 ) ENGINE = InnoDB
-COMMENT = "Tabla de las runs: bloques de tiempo planificados en el calendario";
+COMMENT = "Tabla de las runs: bloques de tiempo planificados en el calendario (pasado, presente y futuro)";
 
 
--- Tabla intermedia N:M: Relación entre RUN y PRODUCTO
+-- Tabla intermedia mutable: Relación entre RUN y PRODUCTO
 CREATE TABLE IF NOT EXISTS RUN_PRODUCTO (
         id_run                          BIGINT          NOT NULL,
         id_producto                     BIGINT          NOT NULL,
 
-        -- Auditoria Completa
+        -- Auditoria Completa (Permite cambios en la planificación)
         created_at                      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at                      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         created_by                      VARCHAR(255)    NOT NULL DEFAULT 'system',
@@ -81,15 +78,15 @@ CREATE TABLE IF NOT EXISTS RUN_PRODUCTO (
         CONSTRAINT fk_runprod_run FOREIGN KEY (id_run) REFERENCES RUN (id) ON DELETE CASCADE,
         CONSTRAINT fk_runprod_prod FOREIGN KEY (id_producto) REFERENCES PRODUCTO (id) ON DELETE CASCADE
 ) ENGINE = InnoDB
-COMMENT = "Relación dinámica N:M entre una RUN y sus productos asignados";
+COMMENT = "Relación dinámica entre una RUN y sus productos asignados";
 
 
--- Tabla intermedia N:M: Relación entre RUN y LINEA
+-- Tabla intermedia mutable: Relación entre RUN y LINEA
 CREATE TABLE IF NOT EXISTS RUN_LINEA (
         id_run                          BIGINT          NOT NULL,
         id_linea                        BIGINT          NOT NULL,
 
-        -- Auditoria Completa
+        -- Auditoria Completa (Permite cambios de asignación de líneas)
         created_at                      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at                      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         created_by                      VARCHAR(255)    NOT NULL DEFAULT 'system',
@@ -100,10 +97,10 @@ CREATE TABLE IF NOT EXISTS RUN_LINEA (
         CONSTRAINT fk_runlin_run FOREIGN KEY (id_run) REFERENCES RUN (id) ON DELETE CASCADE,
         CONSTRAINT fk_runlin_lin FOREIGN KEY (id_linea) REFERENCES LINEA (id) ON DELETE CASCADE
 ) ENGINE = InnoDB
-COMMENT = "Relación dinámica N:M entre una RUN y las líneas asignadas";
+COMMENT = "Relación dinámica entre una RUN y las líneas asignadas";
 
 
--- Tabla de incidencias
+-- Tabla de incidencias, notas y proyectos de la RUN
 CREATE TABLE IF NOT EXISTS INCIDENCIAS (
         -- Clave primaria
         id                              BIGINT          NOT NULL AUTO_INCREMENT,
@@ -115,11 +112,12 @@ CREATE TABLE IF NOT EXISTS INCIDENCIAS (
         -- Auditoria
         created_at                      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at                      DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        created_by                      VARCHAR(255)    NOT NULL DEFAULT 'system',
-        updated_by                      VARCHAR(255)    NOT NULL DEFAULT 'system',
+        created_by                      VARCHAR(255)    NOT NULL,
+        updated_by                      VARCHAR(255)    NOT NULL,
 
         -- Constraints
         PRIMARY KEY (id),
         CONSTRAINT fk_incidencias_run FOREIGN KEY (id_run) REFERENCES RUN (id) ON DELETE CASCADE
 ) ENGINE = InnoDB
-COMMENT = "Eventos, proyectos e incidencias reales asociados a una RUN";
+COMMENT = "Eventos, proyectos planificados (ej. pruebas de personal) e incidencias reales asociados a una RUN";
+
