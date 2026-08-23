@@ -32,7 +32,7 @@ INSERT INTO PRODUCTO (sku, nombre_producto) VALUES
 -- ---------------------------------------------------------
 -- Poblado de la tabla LINEA
 -- ---------------------------------------------------------
-INSERT INTO LINEA (id) VALUES 
+INSERT INTO LINEA (id) VALUES
 (38),
 (39),
 (40);
@@ -40,15 +40,30 @@ INSERT INTO LINEA (id) VALUES
 -- ---------------------------------------------------------
 -- Poblado de la tabla RUN
 -- ---------------------------------------------------------
--- Nota: id_producto hace referencia al ID autoincremental de la tabla PRODUCTO
-INSERT INTO RUN (id, id_producto, id_linea, hora_incio, hora_final, UPM) VALUES
-(1, 1, 38, '2026-08-24 06:00:00', '2026-08-24 14:00:00', 120),
-(2, 2, 38, '2026-08-24 14:30:00', '2026-08-24 22:00:00', 110),
-(3, 9, 39, '2026-08-25 07:00:00', '2026-08-25 15:00:00', 130);
+INSERT INTO RUN (id, fecha_hora_inicio, fecha_hora_final, UPM) VALUES
+(1, '2026-08-24 06:00:00', '2026-08-24 14:00:00', 120),
+(2, '2026-08-24 14:30:00', '2026-08-24 22:00:00', 110),
+(3, '2026-08-25 07:00:00', '2026-08-25 15:00:00', 130);
+
+-- ---------------------------------------------------------
+-- Poblado de la tabla RUN_PRODUCTO (Relación N:M)
+-- ---------------------------------------------------------
+INSERT INTO RUN_PRODUCTO (id_run, id_producto) VALUES
+(1, 1),
+(2, 2),
+(3, 9);
+
+-- ---------------------------------------------------------
+-- Poblado de la tabla RUN_LINEA (Relación N:M)
+-- ---------------------------------------------------------
+INSERT INTO RUN_LINEA (id_run, id_linea) VALUES
+(1, 38),
+(2, 38),
+(3, 39);
 
 -- ---------------------------------------------------------
 -- Poblado de la tabla INCIDENCIAS
 -- ---------------------------------------------------------
-INSERT INTO INCIDENCIAS (id_run, id_linea, id_producto, descripcion, created_by, updated_by) VALUES
-(1, 38, 1, 'Fallo en la selladora al inicio del lote de Chef Salad w/ Chicken', 'jgarcia', 'jgarcia'),
-(2, 38, 2, 'Parada por falta de etiquetado para Chicken Chef Salad (AMZ)', 'mlopez', 'mlopez');
+INSERT INTO INCIDENCIAS (id_run, descripcion, created_by, updated_by) VALUES
+(1, 'Vamos a alterar el personal para el proyecto de roscon', 'jgarcia', 'jgarcia'),
+(2, 'Se va a alterar la velocidad de la run para probar el proyecto 1.23.4', 'mlopez', 'mlopez');
