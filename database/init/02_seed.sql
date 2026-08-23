@@ -65,5 +65,10 @@ INSERT INTO RUN_LINEA (id_run, id_linea) VALUES
 -- Poblado de la tabla INCIDENCIAS
 -- ---------------------------------------------------------
 INSERT INTO INCIDENCIAS (id_run, descripcion, created_by, updated_by) VALUES
+<<<<<<< HEAD
 (1, 'Vamos a alterar el personal para el proyecto de roscon', 'jgarcia', 'jgarcia'),
 (2, 'Se va a alterar la velocidad de la run para probar el proyecto 1.23.4', 'mlopez', 'mlopez');
+=======
+(1, 'Fallo en la selladora al inicio del lote de Chef Salad w/ Chicken', 'jgarcia', 'jgarcia'),
+(2, 'Parada por falta de etiquetado para Chicken Chef Salad (AMZ)', 'mlopez', 'mlopez');
+>>>>>>> feature/queries_sql
