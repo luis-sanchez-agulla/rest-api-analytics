@@ -1,0 +1,45 @@
+# Docker compose - proyecto rest-api-analytics
+# Luis Sanchez Agulla
+
+
+services:
+
+  ## BASE DE DATOS DEL CALENDARIO
+  calendario-db: # nombre del servicio (lo usas en docker compose logs mysql)
+    image: mysql:8.0 # versión de MySQL (mejor fijarla)
+    container_name: db-calendario # nombre fijo del contenedor
+
+    ports:
+      - "3306:3306" # host:contenedor (tu máquina → contenedor)
+
+    environment: # se aplica sobre TODO en el primer arranque (datos vacíos)
+      MYSQL_ROOT_PASSWORD: "rootpass"
+      MYSQL_DATABASE: "bd_calendario"
+      MYSQL_USER: "app"
+      MYSQL_PASSWORD: "apppass"
+
+    volumes:
+      - mysql_data:/var/lib/mysql # persistencia (tablas/índices/datos)
+      - ./mysql/conf.d:/etc/mysql/conf.d:ro # configuración extra (.cnf), solo lectura
+
+      # Añadido por Luis 
+      - ./mysql/init-db:/docker-entrypoint-initdb.d:ro
+      - ./mysql/init-scripts:/docker-entrypoint-initdb.d:ro # creacion de usuarios-roles-vistas-plugins
+
+    networks:
+      - calendario_network
+
+    healthcheck: # indica cuándo MySQL está "listo"
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootpass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+# Red personalizada para que los contenedores de docker se puedan comunicar entre si
+networks:
+  calendario_network:
+    driver: bridge
+
+volumes:
+  mysql_data: # define el volumen nombrado usado arriba
